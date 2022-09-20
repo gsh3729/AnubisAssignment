@@ -1,0 +1,25 @@
+FROM python:3.8.9-alpine
+
+# copy the requirements file into the image
+COPY ./requirements.txt /app/requirements.txt
+
+# switch working directory
+WORKDIR /app
+
+# RUN apt-get -y update && apt-get install -y libzbar-dev
+RUN apk update
+RUN apk add libc-dev
+RUN apk add g++
+RUN apk add gcc
+
+# install the dependencies and packages in the requirements file
+RUN pip3 install -r requirements.txt
+
+# copy every content from the local file to the image
+COPY . /app
+
+# configure the container to run in an executed manner
+ENTRYPOINT [ "python3" ]
+
+CMD ["dbapi.py" ]
+# CMD ["flask", "run", "-h", "0.0.0.0", "-p", "5001"]

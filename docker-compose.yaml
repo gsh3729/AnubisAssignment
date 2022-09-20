@@ -1,0 +1,27 @@
+version: '3.7'
+services:
+  db:
+    # platform: linux/x86_64
+    container_name: "db-container"
+    image: "mysql:5.7"
+    ports:
+      - "5104:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+    volumes:
+      - "./init.sql:/docker-entrypoint-initdb.d/init.sql"
+
+  upload_service:
+    container_name: "upload-service-container"
+    links:
+      - "db"
+    build: ./upload_service
+    ports:
+      - "5001:5001"    
+
+  dbapi_service:
+    container_name: "dbapi-service-container"
+    build: ./dbapi_service
+    ports:
+      - "5004:5004"  
+
