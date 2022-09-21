@@ -3,6 +3,15 @@ import requests
 
 app = Flask(__name__)
 
+
+@app.route('/')
+def download_service():
+    return 'Hello, I am download service!'
+
+@app.route('/pong')
+def pong():
+    return "pong"
+
 @app.route('/download/<filename>')
 def download_file(filename):
     try:

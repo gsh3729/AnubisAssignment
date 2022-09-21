@@ -5,6 +5,21 @@ import requests
 
 app = Flask(__name__)
 
+@app.route('/')
+def upload_service():
+    return 'Hello, I am upload service!'
+
+@app.route('/ping')
+def do_ping():
+    response = ''
+    try:
+        response = requests.get('http://download-service-container:5002/pong')
+    except requests.exceptions.RequestException as e:
+        print('\n Cannot reach the pong service.')
+        return 'Ping ...\n'
+
+    return 'Ping ... ' + response.text + ' \n'
+
 @app.route('/upload')
 def upload_file():
    return render_template('upload.html')
@@ -14,11 +29,9 @@ def upload_file2():
    if request.method == 'POST':
     try:
         f = request.files['file']
-        # f.save(secure_filename(f.filename)) ## delete after using it
-        # insert_blob(filename=f.filename)
+        f.save(secure_filename(f.filename)) 
         response = requests.post('http://dbapi-service-container:5004/write', 
-                files = {'file': f})
-                # files = {'file': open('myfirstreact.png' ,'rb')})
+                files = {'file': open(f.filename ,'rb')})
 
         return 'file uploaded successfully'
     except:

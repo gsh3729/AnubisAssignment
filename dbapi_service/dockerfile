@@ -11,6 +11,14 @@ RUN apk update
 RUN apk add libc-dev
 RUN apk add g++
 RUN apk add gcc
+RUN apk add --no-cache mariadb-dev build-base
+
+RUN apk add mariadb-connector-c
+
+# RUN apk add MariaDB-devel 
+RUN export mariadb_config=/usr/bin/mariadb_config
+
+
 
 # install the dependencies and packages in the requirements file
 RUN pip3 install -r requirements.txt

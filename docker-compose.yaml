@@ -1,27 +1,44 @@
 version: '3.7'
 services:
   db:
-    # platform: linux/x86_64
     container_name: "db-container"
-    image: "mysql:5.7"
+    image: "mariadb:10.5.8"
     ports:
-      - "5104:3306"
+      - "3308:3306"
     environment:
       - MYSQL_ROOT_PASSWORD=root
     volumes:
-      - "./init.sql:/docker-entrypoint-initdb.d/init.sql"
+      - "./init.sql:/docker-entrypoint-initdb.d/init.sql"   
+
+  dbapi_service:
+    container_name: "dbapi-service-container"
+    links:
+      - "db"
+    build: ./dbapi_service/
+    ports:
+      - "5004:5004"  
 
   upload_service:
     container_name: "upload-service-container"
     links:
-      - "db"
-    build: ./upload_service
+      - "dbapi_service"
+    build: ./upload_service/
     ports:
-      - "5001:5001"    
+      - "5001:5001" 
 
-  dbapi_service:
-    container_name: "dbapi-service-container"
-    build: ./dbapi_service
+  download_service:
+    container_name: "download-service-container"
+    links:
+      - "dbapi_service"
+    build: ./download_service/
     ports:
-      - "5004:5004"  
+      - "5002:5002"   
+
+  list_service:
+    container_name: "list-service-container"
+    links:
+      - "dbapi_service"
+    build: ./list_service/
+    ports:
+      - "5003:5003"           
 
